@@ -1,0 +1,52 @@
+
+```{r}
+pak::pak("pxweb")
+```
+
+```{r}
+library(pxweb)
+library(tidyverse)
+```
+```{r}
+# SCB BO0501C — Försäljning av bostadsrätter efter region och år
+# https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__BO__BO0501__BO0501C/FastprisBRFRegionAr/
+
+url <- "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/BO/BO0501/BO0501C/FastprisBRFRegionAr"
+
+riket      <- "00"        # "*" would give all regions
+antal      <- "BO0501R6"
+medelpris  <- "BO0501R7"  # i tkr
+medianpris <- "BO0501R8"  # i tkr
+alla_ar    <- "*"
+
+query <- list(
+  Region       = riket,
+  ContentsCode = c(antal, medelpris, medianpris),
+  Tid          = alla_ar
+)
+
+brf_priser <- pxweb_get(url, query) |>
+  as.data.frame(column.name.type = "text", variable.value.type = "text")
+
+brf_priser
+```
+
+```{r}
+# Tidy: snake_case English names, year as integer, prices in full SEK
+brf_tidy <- brf_priser |>
+  rename(
+    region       = region,
+    year         = år,
+    n_sales      = `Antal`,
+    mean_price   = `Medelpris i tkr`,
+    median_price = `Medianpris i tkr`
+  ) |>
+  mutate(
+    year = as.integer(year),
+    mean_price   = mean_price * 1000,   # tkr -> SEK
+    median_price = median_price * 1000
+  ) |>
+  arrange(region, year)
+
+brf_tidy
+```
