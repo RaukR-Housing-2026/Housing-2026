@@ -1,9 +1,5 @@
 
 ```{r}
-pak::pak("pxweb")
-```
-
-```{r}
 library(pxweb)
 library(tidyverse)
 ```
