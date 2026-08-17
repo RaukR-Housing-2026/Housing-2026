@@ -1,0 +1,14 @@
+```{r}
+library(swemaps2)
+library(stringr)
+
+df <- source("fetch_and_tidy_lan_data_api.R", local = TRUE)$value
+```
+
+```{r}
+df %>%
+    rename(län = region) %>% 
+    full_join(swemaps2::county %>%
+                    mutate(län = ln_namn %>% str_c(" län"),
+               .keep = 'unused'))
+```
