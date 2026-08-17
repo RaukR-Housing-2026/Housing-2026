@@ -6,9 +6,18 @@ df <- source("fetch_and_tidy_lan_data_api.R", local = TRUE)$value
 ```
 
 ```{r}
-df %>%
+df <-
+    df %>%
     rename(län = region) %>% 
     full_join(swemaps2::county %>%
                     mutate(län = ln_namn %>% str_c(" län"),
                .keep = 'unused'))
+```
+
+```{r}
+df %>% 
+    ggplot(aes(fill=median_price, geometry = geometry)) +
+        geom_sf() +
+        scale_fill_viridis_c() +
+        theme_swemap2()
 ```
