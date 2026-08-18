@@ -1,0 +1,294 @@
+
+```{r}
+library(tidyverse)
+library(plotly)
+library(scales)
+```
+
+## Median plot
+
+```{r}
+# % change in median price since 2000
+price_index <- brf_lan_tidy |>
+  filter(!is.na(median_price)) |>
+  group_by(region) |>
+  arrange(year) |>
+  mutate(
+    price_2000 = median_price[year == 2000][1],
+    pct_change = 100 * (median_price / price_2000 - 1)) |>
+  ungroup()
+```
+```{r}
+# Overall trend across lan
+sweden_trend <- price_index |>
+  group_by(year) |>
+  summarise(
+    pct_change = median(pct_change, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+
+```{r}
+# Plot
+p1 <- ggplot() +
+  geom_line(data = price_index,
+    aes(
+      x = year,
+      y = pct_change,
+      group = region,
+      text = paste0(
+        "<b>", region, "</b>",
+        "<br>Year: ", year,
+        "<br>Median price: ", comma(median_price, big.mark = " "), " kr",
+        "<br>Homes sold: ", comma(n_sales, big.mark = " "),
+        "<br>Change since 2000: ", round(pct_change, 1), "%"
+      )
+    ),
+    color = "#5652A4",
+    alpha = 0.45,
+    linewidth = 0.8
+  ) +
+  geom_line(data = sweden_trend,
+    aes(
+      x = year,
+      y = pct_change,
+      group = 1,
+      text = paste0(
+        "<b>Median across län</b>",
+        "<br>Year: ", year,
+        "<br>Change: ", round(pct_change, 1), "%"
+      )
+    ),
+    color = "black",
+    linewidth = 1
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed",
+    color = "grey60"
+  ) +
+  geom_vline(
+    xintercept = 2000,
+    linetype = "dashed",
+    color = "grey60"
+  ) +
+  scale_y_continuous(
+    labels = \(x) paste0(ifelse(x > 0, "+", ""), round(x), "%")
+  ) +
+  labs(
+    title = "Housing Price Development Across Swedish Lan",
+    subtitle = "Median sale price, 2000 = 0%",
+    x = NULL,
+    y = "% Change in median price"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+
+# 4. Make interactive
+ggplotly(p1, tooltip = "text") |>
+  layout(hovermode = "closest",
+    xaxis = list(rangeslider = list(visible = TRUE)
+    )
+  )
+
+```
+
+## Mean plot 
+
+```{r}
+# % change in mean price since 2000
+mean_price_index <- brf_lan_tidy |>
+  filter(!is.na(mean_price)) |>
+  group_by(region) |>
+  arrange(year) |>
+  mutate(
+    mean_price_2000 = mean_price[year == 2000][1],
+    mean_pct_change = 100 * (mean_price / mean_price_2000 - 1)) |>
+  ungroup()
+```
+
+```{r}
+# Overall trend across län
+mean_sweden_trend <- mean_price_index |>
+  group_by(year) |>
+  summarise(
+    mean_pct_change = mean(mean_pct_change, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+```{r}
+# Plot
+p2 <- ggplot() +
+  geom_line(data = mean_price_index,
+    aes(
+      x = year,
+      y = mean_pct_change,
+      group = region,
+      text = paste0(
+        "<b>", region, "</b>",
+        "<br>Year: ", year,
+        "<br>Mean price: ",
+        comma(mean_price, big.mark = " "), " kr",
+        "<br>Homes sold: ",
+        comma(n_sales, big.mark = " "),
+        "<br>Change since 2000: ",
+        round(mean_pct_change, 1), "%"
+      )
+    ),
+    color = "#5652A4",
+    alpha = 0.45,
+    linewidth = 0.8
+  ) +
+  geom_line(
+    data = mean_sweden_trend, 
+    aes(
+      x = year,
+      y = mean_pct_change,
+      group = 1,
+      text = paste0(
+        "<b>Mean across län</b>",
+        "<br>Year: ", year,
+        "<br>Change: ", round(mean_pct_change, 1), "%"
+      )
+    ),
+    color = "black",
+    linewidth = 1
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed",
+    color = "grey60" ) +
+  geom_vline(
+    xintercept = 2000,
+    linetype = "dashed",
+    color = "grey60"
+  ) +
+  scale_y_continuous(
+    labels = \(x) paste0(ifelse(x > 0, "+", ""), round(x), "%")
+  ) +
+  labs(
+    title = "Housing Price Development Across Swedish Lan",
+    subtitle = "Mean sale price, 2000 = 0%",
+    x = NULL,
+    y = "% Change in mean price"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+
+# 4. Make interactive
+ggplotly(p2, tooltip = "text") |>
+  layout(hovermode = "closest",
+    xaxis = list(
+      rangeslider = list(visible = TRUE)
+    )
+  )
+
+```
+
+## Houses sold
+
+```{r}
+# % change in mean price since 2000
+sales_index <- brf_lan_tidy |>
+  filter(!is.na(n_sales)) |>
+  group_by(region) |>
+  arrange(year) |>
+  mutate(
+    sales_2000 = n_sales [year == 2000][1],
+    sales_pct_change = 100 * (n_sales / sales_2000 - 1)) |>
+  ungroup()
+```
+
+```{r}
+# Overall trend across län
+sales_sweden_trend <- sales_index |>
+  group_by(year) |>
+  summarise(
+    sales_pct_change = mean(sales_pct_change, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
+
+```{r}
+# Plot
+p2 <- ggplot() +
+  geom_line(data = sales_index,
+    aes(
+      x = year,
+      y = sales_pct_change,
+      group = region,
+      text = paste0(
+        "<b>", region, "</b>",
+        "<br>Year: ", year,
+        "<br>Houses sold: ",
+        comma(n_sales, big.mark = " "),
+        "<br>Change since 2000: ",
+        round(sales_pct_change, 1), "%"
+      )
+    ),
+    color = "#5652A4",
+    alpha = 0.45,
+    linewidth = 0.8
+  ) +
+  geom_line(
+    data = sales_sweden_trend, 
+    aes(
+      x = year,
+      y = sales_pct_change,
+      group = 1,
+      text = paste0(
+        "<b>Homes sold across län</b>",
+        "<br>Year: ", year,
+        "<br>Change: ", round(sales_pct_change, 1), "%"
+      )
+    ),
+    color = "black",
+    linewidth = 1
+  ) +
+  geom_hline(
+    yintercept = 0,
+    linetype = "dashed",
+    color = "grey60" ) +
+  geom_vline(
+    xintercept = 2000,
+    linetype = "dashed",
+    color = "grey60"
+  ) +
+  scale_y_continuous(
+    labels = \(x) paste0(ifelse(x > 0, "+", ""), round(x), "%")
+  ) +
+  labs(
+    title = "Housing Price Development Across Swedish Lan",
+    subtitle = "Homes sold, 2000 = 0%",
+    x = NULL,
+    y = "% Change in homes sold"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+    plot.title = element_text(hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5)
+  )
+
+# 4. Make interactive
+ggplotly(p2, tooltip = "text") |>
+  layout(hovermode = "closest",
+    xaxis = list(
+      rangeslider = list(visible = TRUE)
+    )
+  )
+
+```
