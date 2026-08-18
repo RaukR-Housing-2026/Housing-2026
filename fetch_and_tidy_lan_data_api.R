@@ -1,14 +1,13 @@
-
-```{r}
 library(pxweb)
 library(tidyverse)
-```
 
-```{r}
+
+
 # SCB BO0501C — Försäljning av bostadsrätter efter län och år
 # https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__BO__BO0501__BO0501C/FastprisBRFRegionAr/
-
 url <- "https://api.scb.se/OV0104/v1/doris/sv/ssd/START/BO/BO0501/BO0501C/FastprisBRFRegionAr"
+
+
 
 lan <- c(
   stockholm       = "01",
@@ -49,9 +48,9 @@ brf_lan <- pxweb_get(url, query) |>
   as.data.frame(column.name.type = "text", variable.value.type = "text")
 
 brf_lan
-```
 
-```{r}
+
+
 # Tidy: snake_case English names, year as integer, prices in full SEK
 brf_lan_tidy <- brf_lan |>
   rename(
@@ -68,4 +67,3 @@ brf_lan_tidy <- brf_lan |>
   )
 
 brf_lan_tidy
-```
