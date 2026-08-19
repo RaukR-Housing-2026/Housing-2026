@@ -18,8 +18,15 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # a healthy build takes ~4 min — kill hung runs instead of billing 6h
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+
+      # runners default to an Azure apt mirror that sometimes goes down and
+      # stalls "Set up R" for 30+ min; point apt at the main archive instead
+      - name: Use main Ubuntu archive for apt
+        run: sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu/|https://archive.ubuntu.com/ubuntu/|g' /etc/apt/apt-mirrors.txt
 
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
