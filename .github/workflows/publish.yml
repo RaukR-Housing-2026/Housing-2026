@@ -31,8 +31,19 @@ jobs:
         with:
           use-public-rspm: true
 
+      # shinylive + knitr/rmarkdown run the render; shiny + dplyr are needed
+      # because the shinylive bundler resolves the app's dependencies against
+      # the local library (the app itself still runs in the visitor's browser).
+      # setup-r-dependencies caches the library between runs.
       - name: Install R packages for render
-        run: Rscript -e "install.packages(c('shinylive', 'knitr', 'rmarkdown'))"
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::shinylive
+            any::knitr
+            any::rmarkdown
+            any::shiny
+            any::dplyr
 
       - name: Render site
         run: quarto render
