@@ -4,6 +4,7 @@ library(tidyverse)
 library(swemaps2)
 library(gganimate)
 library(gifski)
+library(paletteer)
 
 #swemaps 2 does not use län suffix so we remover it before left_join
 
@@ -23,7 +24,9 @@ plot_year <- function(yr) {
     ggplot(aes(fill = median_price)) +
     geom_sf() +
     geom_sf_text(aes(label = ln_namn), size = 3, check_overlap = TRUE) +
-    scale_fill_viridis_c(limits = price_limits, labels = scales::label_number()) +
+    scale_fill_gradientn(colours = rev(paletteer::paletteer_c("grDevices::Reds 3", 30)),
+                         limits = price_limits, labels = scales::label_number(),
+                         na.value = "grey85") +
     labs(title = paste("Median bostadsrätt price,", yr), fill = "SEK") +
     theme_swemap()
 }
@@ -48,7 +51,9 @@ anim <- brf_map |>
   geom_sf() +
   geom_text(data = county_labels, aes(X, Y, label = ln_namn),
             size = 3, inherit.aes = FALSE) +
-  scale_fill_viridis_c(limits = price_limits, labels = scales::label_number()) +
+  scale_fill_gradientn(colours = rev(paletteer::paletteer_c("grDevices::Reds 3", 30)),
+                       limits = price_limits, labels = scales::label_number(),
+                       na.value = "grey85") +
   labs(title = "Median bostadsrätt price, {closest_state}", fill = "SEK") +
   theme_swemap() +
   transition_states(year, transition_length = 1, state_length = 2)
