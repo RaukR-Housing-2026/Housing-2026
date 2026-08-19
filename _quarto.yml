@@ -27,6 +27,8 @@ website:
             text: Relative difference (%)
           - href: mean_median_analysis.qmd
             text: Absolute difference (SEK)
+      - href: "Housing data figures tabs.qmd"
+        text: Prices & income
 
 # cache executed results in _freeze/ (committed), so rendering the site only
 # re-runs pages whose source changed — nobody needs anyone else's data setup
