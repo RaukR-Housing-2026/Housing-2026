@@ -31,8 +31,8 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install shinylive package
-        run: Rscript -e "install.packages('shinylive')"
+      - name: Install R packages for render
+        run: Rscript -e "install.packages(c('shinylive', 'knitr', 'rmarkdown'))"
 
       - name: Render site
         run: quarto render
