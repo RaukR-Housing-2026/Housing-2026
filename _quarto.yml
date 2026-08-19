@@ -13,6 +13,8 @@ website:
     left:
       - href: index.qmd
         text: Home
+      - href: maps.qmd
+        text: Maps
 
 # cache executed results in _freeze/ (committed), so rendering the site only
 # re-runs pages whose source changed — nobody needs anyone else's data setup
@@ -21,5 +23,5 @@ execute:
 
 format:
   html:
-    theme: cosmo
-    toc: true
+    theme: Pulse
+    toc: false

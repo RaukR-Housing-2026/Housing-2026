@@ -1,6 +1,3 @@
 ---
 title: "Swedish Housing Prices"
 ---
-
-
-![Median apartment price per kommun (Hemnet)](figs/kommun_median_price_by_year.gif)
