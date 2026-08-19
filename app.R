@@ -11,6 +11,10 @@ server <- function(input, output) {
       st_buffer(water, -25000), # Button only fully in water
       size = 1) %>%
       st_buffer(dist = 25000) # Button size
+
+   map <- map + 
+            geom_sf_text(data = fish_sf, label = "🐟", size = 5)
+            #> Emoji does not respect alpha  
       
       
    hit <- reactiveVal(FALSE)
@@ -24,12 +28,8 @@ server <- function(input, output) {
          
    output$map <-
       renderPlot(
-         if( !hit() ) { map + 
-            geom_sf_text(data = fish_sf, label = "🐟", size = 5)
-            #> Emoji does not respect alpha  
-         } else       {  map +
-            geom_sf_text(data = fish_sf, label = "🐟", size = 5) +
-            ggtitle('Got it!')
-         ) }
+         if( !hit() ) { map
+         } else       { map + 
+           ggtitle('Fishing mode activated') } 
          
 shinyApp(ui=ui, server=server)
