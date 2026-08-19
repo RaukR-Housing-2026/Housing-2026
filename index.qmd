@@ -1,3 +1,11 @@
 ---
 title: "Swedish Housing Prices"
 ---
+
+![](figs/background_pictures/index_image2.png)
+
+Explore **housing prices** and **salaries** in Sweden to determine where you can maximize your riches
+
+# Data:
+[SCB: Housing prices Sweden 2000-2025](https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__BO__BO0501__BO0501C/FastprisBRFRegionAr/)
+[SCB: Salaries Sweden 2011-2025](https://www.statistikdatabasen.scb.se/pxweb/sv/ssd/START__HE__HE0110__HE0110I/Tab2InkDesoRegso/)

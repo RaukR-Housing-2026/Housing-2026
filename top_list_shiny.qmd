@@ -1,5 +1,5 @@
 ---
-title: "TOP 5"
+title: "Sweden’s Price Ranking"
 engine: knitr
 filters:
   - shinylive
