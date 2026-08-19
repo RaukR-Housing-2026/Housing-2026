@@ -37,7 +37,5 @@ execute:
 
 format:
   html:
-    # Pulse = base look; custom.scss = our brand layer (colors, background
-    # pattern, and the opt-in `bg-photo` page style — documented in the file)
-    theme: [Pulse, custom.scss]
+    theme: Pulse
     toc: false

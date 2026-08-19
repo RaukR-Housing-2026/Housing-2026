@@ -1,21 +1,15 @@
 ---
 title: "Maps"
-# photo-background page: styling lives in custom.scss under `body.bg-photo`
-format:
-  html:
-    body-classes: bg-photo
-resources:
-  - figs/background_pictures/6679.jpg
 ---
 
 ## Län
 
-![](figs/median_price_by_year.gif)
+![](figs/median_price_by_year.gif){style="max-height:85vh; width:auto;"}
 
 ## Kommun
 
-![](figs/kommun_median_price_by_year.gif)
+![](figs/kommun_median_price_by_year.gif){style="max-height:85vh; width:auto;"}
 
-![](figs/kommun_median_price_all_forms_by_year.gif)
+![](figs/kommun_median_price_all_forms_by_year.gif){style="max-height:85vh; width:auto;"}
 
 
