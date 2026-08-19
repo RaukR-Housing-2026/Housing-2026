@@ -6,7 +6,7 @@ ui <- plotOutput("map", click = "map_click")
 
 server <- function(input, output) {
    
-   disk <-
+   fish_sf <-
    st_sample(
       st_buffer(water, -25000), # Button only fully in water
       size = 1) %>%
@@ -18,14 +18,18 @@ server <- function(input, output) {
       req(input$map_click)
       click_pt <-
       st_point(c(input$map_click$x, input$map_click$y)) %>%
-      st_sfc(crs = st_crs(disk) )
+      st_sfc(crs = st_crs(fish_sf) )
          
-      if ( any( st_intersects(click_pt, disk, sparse = FALSE ) ) ) { hit(TRUE) } } )
+      if ( any( st_intersects(click_pt, fish_sf, sparse = FALSE ) ) ) { hit(TRUE) } } )
          
    output$map <-
       renderPlot(
-         if( !hit() ) { map + geom_sf(data = disk)
-         } else       {  map + geom_sf(data = disk) + ggtitle('Got it!') }
+         if( !hit() ) { map + 
+            geom_sf_text(data = fish_sf, label = "🐟", size = 5)
+            #> Emoji does not respect alpha  
+         } else       {  map +
+            geom_sf_text(data = fish_sf, label = "🐟", size = 5) +
+            ggtitle('Got it!')
          ) }
          
 shinyApp(ui=ui, server=server)
