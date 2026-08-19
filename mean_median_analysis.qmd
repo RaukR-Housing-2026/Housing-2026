@@ -8,8 +8,9 @@ library(plotly)
 #Change the df so that it will be displayed in thousant SEK instead + calculate percentage difference. It shows how much higher or lower the mean price is relative to the median.
 brf_lan_tidy <- brf_lan_tidy |>
   mutate(mean_price_mkr = mean_price / 1e6,
-    median_price_mkr = median_price / 1e6),
-    diff_pct = (mean_price_mkr - median_price_mkr) / median_price_mkr * 100)
+    median_price_mkr = median_price / 1e6,
+    diff_pct = (mean_price_mkr - median_price_mkr) /
+      median_price_mkr * 100)
 #Arrange the order of the regions after the media price 2025
 region_order <- brf_lan_tidy |>
   filter(year == 2025) |>
@@ -17,7 +18,7 @@ region_order <- brf_lan_tidy |>
   pull(region)
 #Apply the new region order
 brf_lan_tidy <- brf_lan_tidy |>
-    mutate(region = factor(region, levels = region_order)) #
+    mutate(region = factor(region, levels = region_order)) 
 ```
 
 <!-- Dumbbell plot -->
@@ -46,6 +47,7 @@ p <- ggplot(brf_lan_tidy, aes(y = region)) +
            sep = "<br>")), size = 2) +
 
     labs(title = "Mean vs. median price",
+    subtitle = "Absolut difference in price",
     x = "Price (in million SEK)",
     y = NULL,
     color = NULL) +
