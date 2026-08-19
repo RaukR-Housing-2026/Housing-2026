@@ -1,0 +1,73 @@
+
+```{r}
+#Change the df so that it will be displayed in thousant SEK instead + calculate percentage difference. It shows how much higher or lower the mean price is relative to the median.
+brf_lan_tidy <- brf_lan_tidy |>
+  mutate(mean_price_mkr = mean_price / 1e6,
+    median_price_mkr = median_price / 1e6,
+    diff_pct = (mean_price_mkr - median_price_mkr) /
+      median_price_mkr * 100, 
+    diff_direction = ifelse(diff_pct >= 0, "Mean above median", "Mean below median"))
+#Arrange the order of the regions after the media price 2025
+region_order <- brf_lan_tidy |>
+  filter(year == 2025) |>
+  arrange(median_price_mkr) |>
+  pull(region)
+#Apply the new region order
+brf_lan_tidy <- brf_lan_tidy |>
+    mutate(region = factor(region, levels = region_order)) 
+```
+
+```{r}
+p_lollipop <- ggplot(brf_lan_tidy, aes(y = region, group = region)) +
+
+  geom_vline(
+    xintercept = 0,
+    #linetype = "dashed",
+    colour = "black") +
+
+  geom_segment(aes(
+    x = 0, 
+    xend = diff_pct, 
+    yend = region, 
+    frame = year),
+    colour = "grey") +
+  
+  geom_point(aes(
+    x = diff_pct, 
+    colour = diff_direction,
+    frame = year,
+    text = paste(region,
+           paste("Median:", median_price_mkr, "million SEK"),
+           paste("Mean:", mean_price_mkr, "million SEK"),
+           paste("Difference:", round(diff_pct), "%"),
+           sep = "<br>")), size = 2) +
+
+    labs(title = "tralla",
+    subtitle = "tralala",
+    x = "Difference relative to median (%)",
+    y = NULL,
+    color = NULL) +
+
+    scale_colour_manual(
+    values = c(
+    "Mean above median" = "steelblue",
+    "Mean below median" = "darkorange")) +
+
+    scale_x_continuous(
+    breaks = seq(-20, 140, 20)) +
+    
+    theme_minimal() +
+    theme(panel.grid.major.y = element_blank(),
+    legend.position = "right")
+```
+
+```{r}
+ggplotly(p_lollipop, tooltip = "text") |>
+  animation_opts(redraw = TRUE)|>
+  animation_slider(
+    currentvalue = list(
+      prefix = "Year: ")) |> 
+
+animation_button(
+    visible = FALSE
+  )
