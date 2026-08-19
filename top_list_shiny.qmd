@@ -5,8 +5,6 @@ filters:
   - shinylive
 ---
 
-Runs entirely in your browser via [Shinylive](https://shiny.posit.co/py/docs/shinylive.html)
-(webR) — first load takes a moment while R downloads.
 
 ```{shinylive-r}
 #| standalone: true
