@@ -1,0 +1,6 @@
+renv.lock
+data-raw/
+/_site/
+/.quarto/
+
+**/*.quarto_ipynb

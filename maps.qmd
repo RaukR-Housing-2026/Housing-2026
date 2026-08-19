@@ -1,0 +1,26 @@
+---
+title: "Maps"
+---
+
+Median housing prices over time mapped using data from SCB and Hemnet. 
+
+## Län : Statistikmyndigheten SCB
+
+Median sold price for bostadsrätter per län, 2000-2023. Source: SCB table
+BO0501C (registry data, all sales).
+
+![](figs/median_price_by_year.gif)
+
+## Kommun : Hemnet
+
+Based on ~1.1M sold listings scraped from hemnet.se  by 
+[hempriser](https://github.com/pierrelefevre/hempriser)
+ 2012-2023
+
+![](figs/kommun_median_price_by_year.gif)
+
+All housing forms combined
+
+![](figs/kommun_median_price_all_forms_by_year.gif)
+
+
