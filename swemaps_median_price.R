@@ -45,37 +45,34 @@ county_labels <- county |>
   as_tibble() |>
   mutate(ln_namn = county$ln_namn)
 
-# big year "counter" to the right of the map — one row per year, so
-# transition_states() swaps the label in sync with the map frames
+# big year "counter" to the right of the map — rendered as the plot "tag"
+# (a labs element like the title), so gganimate swaps it per frame via
+# {closest_state} instead of tweening it (tweened text morphs glitchily)
 bb <- sf::st_bbox(county)
-year_label <- tibble(
-  year = sort(unique(brf_map$year)),
-  X = bb[["xmax"]] + 0.32 * (bb[["xmax"]] - bb[["xmin"]]),
-  Y = (bb[["ymin"]] + bb[["ymax"]]) / 2
-)
 
 anim <- brf_map |>
   ggplot(aes(fill = median_price)) +
   geom_sf() +
   geom_text(data = county_labels, aes(X, Y, label = ln_namn),
             size = 3, inherit.aes = FALSE) +
-  geom_text(data = year_label, aes(X, Y, label = year),
-            size = 24, fontface = "bold", colour = "grey25",
-            inherit.aes = FALSE) +
+  # blank space on the right of the map for the year counter to sit over
   expand_limits(x = bb[["xmax"]] + 0.62 * (bb[["xmax"]] - bb[["xmin"]])) +
   scale_fill_gradientn(colours = rev(paletteer::paletteer_c("grDevices::Reds 3", 30)),
                        limits = price_limits, labels = scales::label_number(),
                        na.value = "grey85") +
-  labs(title = "Median bostadsrätt price", fill = "SEK") +
+  labs(title = "Median bostadsrätt price", fill = "SEK",
+       tag = "{closest_state}") +
   theme_swemap() +
   # transparent canvas so the gif floats on the site's photo background
   theme(plot.background = element_rect(fill = "transparent", colour = NA),
         panel.background = element_rect(fill = "transparent", colour = NA),
-        legend.background = element_rect(fill = "transparent", colour = NA)) +
+        legend.background = element_rect(fill = "transparent", colour = NA),
+        plot.tag = element_text(size = 68, face = "bold", colour = "grey25"),
+        plot.tag.position = c(0.70, 0.55)) +
   transition_states(year, transition_length = 1, state_length = 3)
 
 # wider canvas to make room for the year counter on the right
-animate(anim, fps = 12, nframes = 400, width = 1050, height = 900, res = 100,
+animate(anim, fps = 24, nframes = 400, width = 1050, height = 900, res = 100,
         renderer = gifski_renderer(), bg = "transparent")
 
 anim_save("figs/median_price_by_year.gif")
