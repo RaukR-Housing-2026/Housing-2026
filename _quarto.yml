@@ -1,0 +1,25 @@
+project:
+  type: website
+  render:
+    - "*.qmd"
+    # WIP pages excluded from the site build for now — remove your file from
+    # this list (and add it to the navbar below) when it's ready
+    - "!swemaps_v1.qmd"
+    - "!Housing data over time.qmd"
+
+website:
+  title: "Housing 2026"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+
+# cache executed results in _freeze/ (committed), so rendering the site only
+# re-runs pages whose source changed — nobody needs anyone else's data setup
+execute:
+  freeze: auto
+
+format:
+  html:
+    theme: cosmo
+    toc: true
