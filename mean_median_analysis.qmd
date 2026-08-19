@@ -1,3 +1,8 @@
+---
+title: "Absolut difference in million SEK between median and mean prices"
+format: html
+---
+
 ```{r}
 library(tidyverse)
 library(plotly)
@@ -46,8 +51,8 @@ p <- ggplot(brf_lan_tidy, aes(y = region)) +
            paste("Difference:", round(diff_pct), "%"),
            sep = "<br>")), size = 2) +
 
-    labs(title = "Mean vs. median price",
-    subtitle = "Absolut difference in price",
+    labs(title = "Mean vs. median prices",
+    subtitle = "Absolut difference in SEK",
     x = "Price (in million SEK)",
     y = NULL,
     color = NULL) +

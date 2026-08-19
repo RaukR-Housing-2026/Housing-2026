@@ -1,3 +1,12 @@
+---
+title: "Relative difference in % between median and mean prices"
+format: html
+---
+
+```{r}
+library(tidyverse)
+library(plotly)
+```
 
 ```{r}
 #Change the df so that it will be displayed in thousant SEK instead + calculate percentage difference. It shows how much higher or lower the mean price is relative to the median.
@@ -42,8 +51,8 @@ p_lollipop <- ggplot(brf_lan_tidy, aes(y = region, group = region)) +
            paste("Difference:", round(diff_pct), "%"),
            sep = "<br>")), size = 2) +
 
-    labs(title = "tralla",
-    subtitle = "tralala",
+    labs(title = "Percentage difference between mean and median prices",
+    subtitle = "Relative difference in %",
     x = "Difference relative to median (%)",
     y = NULL,
     color = NULL) +
