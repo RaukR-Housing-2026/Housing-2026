@@ -6,6 +6,10 @@ project:
     # this list (and add it to the navbar below) when it's ready
     - "!swemaps_v1.qmd"
     - "!Housing data over time.qmd"
+  # non-page files to copy into the deployed site (the shinylive app fetches
+  # its data snapshot from here at runtime)
+  resources:
+    - data/brf_lan_tidy.csv
 
 website:
   title: "Housing 2026"
@@ -15,6 +19,14 @@ website:
         text: Home
       - href: maps.qmd
         text: Maps
+      - href: top_list_shiny.qmd
+        text: Top 5
+      - text: Mean vs median
+        menu:
+          - href: lollipop_mean_median.qmd
+            text: Relative difference (%)
+          - href: mean_median_analysis.qmd
+            text: Absolute difference (SEK)
 
 # cache executed results in _freeze/ (committed), so rendering the site only
 # re-runs pages whose source changed — nobody needs anyone else's data setup

@@ -6,6 +6,9 @@ format: html
 ```{r}
 library(tidyverse)
 library(plotly)
+
+# SCB data snapshot committed in data/ (regenerate with fetch_and_tidy_lan_data_api.R)
+brf_lan_tidy <- read.csv("data/brf_lan_tidy.csv")
 ```
 
 <!-- Arrange the order of the regions after the media price 2025 -->
