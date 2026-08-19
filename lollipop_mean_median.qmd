@@ -1,6 +1,10 @@
 ---
 title: "Relative difference in % between median and mean prices"
 format: html
+execute:
+  echo: false
+  warning: false
+  message: false
 ---
 
 ```{r}
@@ -83,3 +87,4 @@ ggplotly(p_lollipop, tooltip = "text") |>
 animation_button(
     visible = FALSE
   )
+```

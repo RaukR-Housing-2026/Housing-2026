@@ -1,6 +1,10 @@
 ---
 title: "Absolut difference in million SEK between median and mean prices"
 format: html
+execute:
+  echo: false
+  warning: false
+  message: false
 ---
 
 ```{r}
