@@ -56,9 +56,13 @@ anim <- brf_map |>
                        na.value = "grey85") +
   labs(title = "Median bostadsrätt price, {closest_state}", fill = "SEK") +
   theme_swemap() +
+  # transparent canvas so the gif floats on the site's photo background
+  theme(plot.background = element_rect(fill = "transparent", colour = NA),
+        panel.background = element_rect(fill = "transparent", colour = NA),
+        legend.background = element_rect(fill = "transparent", colour = NA)) +
   transition_states(year, transition_length = 1, state_length = 2)
 
 animate(anim, fps = 24, width = 700, height = 900, res = 100,
-        renderer = gifski_renderer())
+        renderer = gifski_renderer(), bg = "transparent")
 
 anim_save("figs/median_price_by_year.gif")

@@ -55,10 +55,14 @@ animate_form <- function(form, gif_name) {
     labs(title = paste0("Median price, ", form, " (Hemnet), {closest_state}"),
          fill = "SEK") +
     theme_swemap() +
+    # transparent canvas so the gif floats on the site's photo background
+    theme(plot.background = element_rect(fill = "transparent", colour = NA),
+          panel.background = element_rect(fill = "transparent", colour = NA),
+          legend.background = element_rect(fill = "transparent", colour = NA)) +
     transition_states(year, transition_length = 1, state_length = 2)
 
   animate(anim, fps = 24, width = 700, height = 900, res = 100,
-          renderer = gifski_renderer())
+          renderer = gifski_renderer(), bg = "transparent")
   anim_save(gif_name)
 }
 
