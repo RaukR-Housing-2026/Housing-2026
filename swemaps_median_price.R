@@ -75,7 +75,7 @@ anim <- brf_map |>
   transition_states(year, transition_length = 1, state_length = 2)
 
 # wider canvas to make room for the year counter on the right
-animate(anim, fps = 24, width = 1050, height = 900, res = 100,
+animate(anim, fps = 12, width = 1050, height = 900, res = 100,
         renderer = gifski_renderer(), bg = "transparent")
 
 anim_save("figs/median_price_by_year.gif")
