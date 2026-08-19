@@ -21,7 +21,6 @@ brf_lan_tidy <- read.csv("brf_lan_tidy.csv")
 
 shinyApp(
   ui = fluidPage(
-    h3("A BETTER TITLE"),
     fluidRow(
       column(4,
         selectInput("direct_input",
