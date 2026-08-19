@@ -1,1 +1,10 @@
 renv.lock
+data-raw/
+/_site/
+/.quarto/
+
+# stray output from rendering a single qmd outside the site build
+/site_libs/
+/*.html
+
+**/*.quarto_ipynb

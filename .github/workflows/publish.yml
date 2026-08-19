@@ -1,0 +1,63 @@
+name: Publish site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# don't let two pushes deploy at the same time
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+
+      # the shinylive Quarto extension shells out to Rscript at render time
+      # to bundle the app (no app code is executed during render)
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      # shinylive + knitr/rmarkdown run the render; shiny + dplyr are needed
+      # because the shinylive bundler resolves the app's dependencies against
+      # the local library (the app itself still runs in the visitor's browser).
+      # setup-r-dependencies caches the library between runs.
+      - name: Install R packages for render
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          packages: |
+            any::shinylive
+            any::knitr
+            any::rmarkdown
+            any::shiny
+            any::dplyr
+
+      - name: Render site
+        run: quarto render
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

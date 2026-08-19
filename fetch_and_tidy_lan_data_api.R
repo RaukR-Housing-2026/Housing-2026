@@ -64,7 +64,6 @@ brf_lan_tidy <- brf_lan |>
     year = as.integer(year),
     mean_price   = mean_price * 1000,   # tkr -> SEK
     median_price = median_price * 1000
-  ) |>
-  arrange(region, year)
+  )
 
 brf_lan_tidy
