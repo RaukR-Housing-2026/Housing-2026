@@ -55,4 +55,5 @@ map <- ggplot() +
     geom_sf(data = df, aes(geometry=geometry, fill=median_price) ) +
     geom_sf(data = neighbours, fill='grey' ) +
     geom_sf(data = water, fill='blue3' ) +
-    swemaps2::theme_swemap()
+    swemaps2::theme_swemap() +
+    scale_fill_distiller(palette='Reds', direction = 1)

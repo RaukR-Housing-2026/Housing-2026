@@ -38,7 +38,9 @@ server <- function(input, output) {
             aes(
                geometry=geometry,
                fill=median_price / `Antal dagar i tusental, totalt`) ) +
-           scale_fill_continuous(
+           scale_fill_distiller(
+           palette='Reds',
+           direction=-1,
             limits =
                c(0,
                max(df %>%
