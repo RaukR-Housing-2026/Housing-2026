@@ -18,6 +18,8 @@ df <- df %>%
                .keep = 'unused')) %>%
     full_join(fish_df, join_by(ln_kod == region_code, year) )
 
+df <- df %>% filter(year == my_year)
+
 neighbours <-
     ne_countries(
         country=c('denmark','finland','norway'),

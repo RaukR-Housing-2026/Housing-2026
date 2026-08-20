@@ -1,5 +1,7 @@
 library(shiny)
 
+my_year <- 2025
+
 source("plot_data.R")
 
 ui <- plotOutput("map", click = "map_click")
