@@ -1,0 +1,15 @@
+{
+  "hash": "dcd1780101efe9f4c73f03d4d55ce826",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Yet Another map\"\nengine: knitr\nfilters:\n  - shinylive\n---\n\n\n```{shinylive-r}\n#| standalone: true\n#| viewerHeight: 560\n\nlibrary(shiny)\nlibrary(sf)\nlibrary(ggplot2)\nlibrary(dplyr)\n\n# Pre-built spatial snapshot committed in data/ (län polygons with 2025 median\n# price + SCB fritidsfiske days, plus water/neighbour geometries). The browser\n# can't run pxweb/swemaps2/rnaturalearth, so the pipeline in\n# yet_another_map__plot.R runs locally instead — regenerate with:\n#   my_year <- 2025; source(\"yet_another_map__plot.R\")\n#   saveRDS(list(df = df, water = water, neighbours = neighbours),\n#           \"data/yet_another_map.rds\")\nurl <- \"https://raukr-housing-2026.github.io/Housing-2026/data/yet_another_map.rds\"\ndownload.file(url, \"yet_another_map.rds\")\nd <- readRDS(\"yet_another_map.rds\")\ndf <- d$df\nwater <- d$water\nneighbours <- d$neighbours\n\nmap <- ggplot() +\n   geom_sf(data = df, aes(geometry = geometry, fill = median_price)) +\n   geom_sf(data = neighbours, fill = \"grey\") +\n   geom_sf(data = water, fill = \"blue3\") +\n   theme_void() +\n   scale_fill_distiller(\n      palette = \"Reds\",\n      direction = 1,\n      name = \"median housing price\")\n\n# median price / fishing days, with no-fishing län set to 1 day\nnorm_df <- df |>\n   mutate(\n      fishing_days = coalesce(`Antal dagar i tusental, totalt`, 1),\n      fishing_days = if_else(fishing_days == 0, 1, fishing_days),\n      norm = median_price / fishing_days)\n\nui <- plotOutput(\"map\", click = \"map_click\")\n\nserver <- function(input, output) {\n\n   fish_sf <-\n   st_sample(\n      st_buffer(water, -25000), # Button only fully in water\n      size = 1) |>\n      st_buffer(dist = 25000) # Button size\n\n   map <- map +\n            geom_sf_text(data = fish_sf, label = \"🐟\", size = 5) +\n            ## Emoji does not respect alpha, so cover:\n            geom_sf(data = fish_sf, fill = 'blue3', alpha = 1/2, colour = 'blue3')\n\n   hit <- reactiveVal(FALSE)\n   observeEvent(input$map_click, {\n      req(input$map_click)\n      click_pt <-\n      st_point(c(input$map_click$x, input$map_click$y)) |>\n      st_sfc(crs = st_crs(fish_sf))\n\n      if ( any( st_intersects(click_pt, fish_sf, sparse = FALSE ) ) ) { hit(TRUE) } } )\n\n   output$map <-\n      renderPlot(\n         if( !hit() ) { map\n         } else       { map +\n           ggtitle('Fishing mode activated') +\n           geom_sf(data = norm_df, aes(geometry = geometry, fill = norm)) +\n           scale_fill_distiller(\n              palette = 'Reds',\n              direction = 1,\n              limits = c(0, max(norm_df$norm, na.rm = TRUE)),\n              name = 'median housing price\\n normalized by fishing days')\n         } ) }\n\nshinyApp(ui = ui, server = server)\n```\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -44,7 +44,7 @@ jobs:
       # Plain install.packages with RSPM binaries takes ~40s — do NOT swap in
       # setup-r-dependencies: its first uncached run looks hung for 10+ min.
       - name: Install R packages for render
-        run: Rscript -e "install.packages(c('shinylive', 'knitr', 'rmarkdown', 'shiny', 'dplyr'))"
+        run: Rscript -e "install.packages(c('shinylive', 'knitr', 'rmarkdown', 'shiny', 'dplyr', 'sf', 'ggplot2'))"
 
       - name: Render site
         run: quarto render

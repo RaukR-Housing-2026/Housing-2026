@@ -1,0 +1,87 @@
+---
+title: "Yet Another map"
+engine: knitr
+filters:
+  - shinylive
+---
+
+
+```{shinylive-r}
+#| standalone: true
+#| viewerHeight: 560
+
+library(shiny)
+library(sf)
+library(ggplot2)
+library(dplyr)
+
+# Pre-built spatial snapshot committed in data/ (län polygons with 2025 median
+# price + SCB fritidsfiske days, plus water/neighbour geometries). The browser
+# can't run pxweb/swemaps2/rnaturalearth, so the pipeline in
+# yet_another_map__plot.R runs locally instead — regenerate with:
+#   my_year <- 2025; source("yet_another_map__plot.R")
+#   saveRDS(list(df = df, water = water, neighbours = neighbours),
+#           "data/yet_another_map.rds")
+url <- "https://raukr-housing-2026.github.io/Housing-2026/data/yet_another_map.rds"
+download.file(url, "yet_another_map.rds")
+d <- readRDS("yet_another_map.rds")
+df <- d$df
+water <- d$water
+neighbours <- d$neighbours
+
+map <- ggplot() +
+   geom_sf(data = df, aes(geometry = geometry, fill = median_price)) +
+   geom_sf(data = neighbours, fill = "grey") +
+   geom_sf(data = water, fill = "blue3") +
+   theme_void() +
+   scale_fill_distiller(
+      palette = "Reds",
+      direction = 1,
+      name = "median housing price")
+
+# median price / fishing days, with no-fishing län set to 1 day
+norm_df <- df |>
+   mutate(
+      fishing_days = coalesce(`Antal dagar i tusental, totalt`, 1),
+      fishing_days = if_else(fishing_days == 0, 1, fishing_days),
+      norm = median_price / fishing_days)
+
+ui <- plotOutput("map", click = "map_click")
+
+server <- function(input, output) {
+
+   fish_sf <-
+   st_sample(
+      st_buffer(water, -25000), # Button only fully in water
+      size = 1) |>
+      st_buffer(dist = 25000) # Button size
+
+   map <- map +
+            geom_sf_text(data = fish_sf, label = "🐟", size = 5) +
+            ## Emoji does not respect alpha, so cover:
+            geom_sf(data = fish_sf, fill = 'blue3', alpha = 1/2, colour = 'blue3')
+
+   hit <- reactiveVal(FALSE)
+   observeEvent(input$map_click, {
+      req(input$map_click)
+      click_pt <-
+      st_point(c(input$map_click$x, input$map_click$y)) |>
+      st_sfc(crs = st_crs(fish_sf))
+
+      if ( any( st_intersects(click_pt, fish_sf, sparse = FALSE ) ) ) { hit(TRUE) } } )
+
+   output$map <-
+      renderPlot(
+         if( !hit() ) { map
+         } else       { map +
+           ggtitle('Fishing mode activated') +
+           geom_sf(data = norm_df, aes(geometry = geometry, fill = norm)) +
+           scale_fill_distiller(
+              palette = 'Reds',
+              direction = 1,
+              limits = c(0, max(norm_df$norm, na.rm = TRUE)),
+              name = 'median housing price\n normalized by fishing days')
+         } ) }
+
+shinyApp(ui = ui, server = server)
+```
