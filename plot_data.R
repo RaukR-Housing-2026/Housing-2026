@@ -7,13 +7,16 @@ library(ggplot2)
 library(magrittr)
 
 df <- source("fetch_and_tidy_lan_data_api.R", local = TRUE)$value
+fish_df <- source("fetch_and_tidy_fishing_data.R", local = TRUE)$value
 
-df <-
-    df %>%
+
+
+df <- df %>%
     rename(län = region) %>% 
     full_join(swemaps2::county %>%
                     mutate(län = ln_namn %>% str_c(" län"),
-               .keep = 'unused'))
+               .keep = 'unused')) %>%
+    full_join(fish_df, join_by(ln_kod == region_code, year) )
 
 neighbours <-
     ne_countries(

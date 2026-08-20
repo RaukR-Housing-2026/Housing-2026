@@ -30,6 +30,18 @@ server <- function(input, output) {
       renderPlot(
          if( !hit() ) { map
          } else       { map + 
-           ggtitle('Fishing mode activated') } 
+           ggtitle('Fishing mode activated') +
+           geom_sf(
+            data = df,
+            aes(
+               geometry=geometry,
+               fill=median_price / `Antal dagar i tusental, totalt`) ) +
+           scale_fill_continuous(
+            limits =
+               c(0,
+               max(df %>%
+                 filter(`Antal dagar i tusental, totalt` %>% { !is.na(.) & . != 0 }) %>%
+                 { .$median_price / .$`Antal dagar i tusental, totalt` } ) ) )
+         } ) } 
          
 shinyApp(ui=ui, server=server)
