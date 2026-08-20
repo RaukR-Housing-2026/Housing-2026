@@ -15,9 +15,9 @@ server <- function(input, output) {
       st_buffer(dist = 25000) # Button size
 
    map <- map + 
-            geom_sf_text(data = fish_sf, label = "🐟", size = 5)
-            #> Emoji does not respect alpha  
-      
+            geom_sf_text(data = fish_sf, label = "🐟", size = 5) +
+            ## Emoji does not respect alpha, so cover:
+            geom_sf(data = fish_sf, fill = 'blue3', alpha = 1/2, colour = 'blue3') 
       
    hit <- reactiveVal(FALSE)
    observeEvent(input$map_click, {
