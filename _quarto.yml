@@ -22,11 +22,14 @@ website:
       - href: top_list_shiny.qmd
         text: Top 5
       - text: Mean vs median
-        menu:
+        menu: 
           - href: lollipop_mean_median.qmd
             text: Relative difference (%)
           - href: mean_median_analysis.qmd
             text: Absolute difference (SEK)
+      - href: yet_another_map.qmd
+        title: Yet Another map
+
 
 # cache executed results in _freeze/ (committed), so rendering the site only
 # re-runs pages whose source changed — nobody needs anyone else's data setup
