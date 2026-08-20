@@ -34,7 +34,9 @@ server <- function(input, output) {
          } else       { map + 
            ggtitle('Fishing mode activated') +
            geom_sf(
-            data = df,
+            data = df %>%
+              mutate(`Antal dagar i tusental, totalt` = `Antal dagar i tusental, totalt` %>%
+                { replace(., is.na(.) | . == 0, 1) } ),
             aes(
                geometry=geometry,
                fill=median_price / `Antal dagar i tusental, totalt`) ) +
@@ -44,7 +46,6 @@ server <- function(input, output) {
             limits =
                c(0,
                max(df %>%
-                 filter(`Antal dagar i tusental, totalt` %>% { !is.na(.) & . != 0 }) %>%
                  { .$median_price / .$`Antal dagar i tusental, totalt` } ) ) )
          } ) } 
          
