@@ -42,11 +42,12 @@ server <- function(input, output) {
                fill=median_price / `Antal dagar i tusental, totalt`) ) +
            scale_fill_distiller(
            palette='Reds',
-           direction=-1,
+         direction=1,
             limits =
                c(0,
                max(df %>%
-                 { .$median_price / .$`Antal dagar i tusental, totalt` } ) ) )
+            { .$median_price / .$`Antal dagar i tusental, totalt` } ) ),
+         name = 'median housing price\n normalized by fishing days')
          } ) } 
          
 shinyApp(ui=ui, server=server)

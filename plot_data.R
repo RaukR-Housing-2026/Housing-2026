@@ -56,4 +56,7 @@ map <- ggplot() +
     geom_sf(data = neighbours, fill='grey' ) +
     geom_sf(data = water, fill='blue3' ) +
     swemaps2::theme_swemap() +
-    scale_fill_distiller(palette='Reds', direction = 1)
+    scale_fill_distiller(
+        palette='Reds',
+        direction = 1,
+        name = 'median housing price')
