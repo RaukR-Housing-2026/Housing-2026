@@ -51,6 +51,6 @@ fisk_lan <- fisk_tidy %>% ( function(df) {
   df %>%
     inner_join(crosswalk, by = "area_code", relationship = "many-to-many") %>%
     mutate(across(all_of(num_cols), ~ .x / n()), .by = c(area_code, year)) |>
-    summarise(across(all_of(num_cols), ~ sum(.x, na.rm = TRUE)), .by = c(area_code, year, region_code, region_name)) |>
+    summarise(across(all_of(num_cols), ~ sum(.x, na.rm = TRUE)), .by = c(year, region_code, region_name)) |>
     complete(region_code = lan_alla, year) |>
     arrange(region_code, year) } )
